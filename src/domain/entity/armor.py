@@ -1,25 +1,23 @@
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from pydantic import BaseModel, Field, ConfigDict
 
-@dataclass
-class Armor(ABC):
-    _name: str
-    _durability: int
-    _endurance: int
+class Armor(ABC, BaseModel):
+    model_config = ConfigDict(validate_assignment=True)
+    name: str = Field(..., description='Название брони')
+    endurance: int = Field(..., description='Влияния на выносливость, '
+                                             'чем выше, тем тяжелее броня')
+    durability: int = Field(..., ge=0, le=320, description='Прочность брони')
 
-@dataclass
 class HeadArmor(Armor):
-    armor_head: int
+    durability: int = Field(...,ge=0, le=300, description='Прочность брони для головы')
+    price: int = Field(..., ge=15, le=4000, description='Цена брони для головы')
 
-@dataclass
 class BodyArmor(Armor):
-    armor_body: int
+    durability: int = Field(..., ge=0, le=320, description='Прочность брони для тела')
+    price: int = Field(..., ge=0, le=7000, description='Цена брони для тела')
 
-@dataclass
 class UniqueHeadArmor(HeadArmor):
     pass
 
-@dataclass
 class UniqueBodyArmor(BodyArmor):
     pass
-
