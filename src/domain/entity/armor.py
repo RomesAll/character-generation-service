@@ -16,10 +16,10 @@ class Armor(ABC, BaseModel):
         return self
 
     def take_damage(self, damage: int) -> None:
-        self.current_durability -= damage
+        self.current_durability = max(0, self.current_durability - damage)
 
     def repair(self, amount: int) -> None:
-        self.current_durability += amount
+        self.current_durability = min(self.max_durability, self.current_durability + amount)
 
 class HeadArmor(Armor):
     max_durability: int = Field(...,ge=0, le=300, description='Максимальная прочность брони для головы')
