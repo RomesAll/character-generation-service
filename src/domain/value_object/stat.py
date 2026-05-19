@@ -1,6 +1,30 @@
 from dataclasses import dataclass, field
 
 @dataclass(frozen=True)
+class BaseStat:
+    name: str
+    current: int
+    maximum: int
+    description: str | None = None
+
+    def __post_init__(self):
+        if self.maximum <= 0:
+            raise ValueError('Максимальное значение должно быть больше 0')
+        if not(0 <= self.current <= self.maximum):
+            raise ValueError(f'Текущее значение характеристики: {self.name} должно находится в '
+                             f'диапазоне от 0 до {self.maximum}')
+
+    def decrease(self, damage: int) -> 'BaseStat':
+        new_current_value = max(0, self.current - damage)
+        return BaseStat(self.name, new_current_value, self.maximum, self.description)
+
+    def increase(self, amount: int) -> 'BaseStat':
+        new_current_value = min(self.maximum, self.current + amount)
+        return BaseStat(self.name, new_current_value, self.maximum, self.description)
+
+
+
+@dataclass(frozen=True)
 class Stat:
     health: int = field(default=0, metadata={'description': 'Health'})
     armor_head: int = field(default=0, metadata={'description': 'Armor head'})
