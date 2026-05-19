@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, Field, ConfigDict, model_validator
+from src.domain.value_object.equipment_type import EquipmentType
 
 class Equipment(ABC, BaseModel):
     model_config = ConfigDict(validate_assignment=True)
 
     name: str = Field(..., frozen=True, description='Название оружия')
+    type_equipment: EquipmentType = Field(..., frozen=True, description='Тип оружия (одноручный, двуручный)')
     price: int = Field(..., ge=0, description='Цена оружия')
     max_durability: int = Field(..., ge=0, le=100, frozen=True, description='Максимальная прочность')
     current_durability: int = Field(..., ge=0, le=100, description='Текущая прочность')
