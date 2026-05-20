@@ -22,7 +22,7 @@ class ArmsFastSlot(BaseModel):
     class ManageHandItem(BaseModel):
         hand_name: str
         item_in_hand: Equipment | None = None
-        other_hand: 'ArmsFastSlot.ManageHandItem | None' = None
+        other_hand: 'ArmsFastSlot.ManageHandItem | None' = Field(None, repr=False)
 
         def equip(self, item: Equipment | None = None) -> (Equipment |
                                                            tuple[Equipment, ...] |
