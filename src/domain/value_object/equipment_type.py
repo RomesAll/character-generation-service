@@ -1,5 +1,5 @@
 from enum import Enum
 
 class EquipmentType(Enum):
-    ONE_HAND = 'одноручный предмет'
-    TWO_HAND = 'двуручный предмет'
+    one_hand = 'одноручный предмет'
+    two_hand = 'двуручный предмет'
