@@ -1,5 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from pydantic import BaseModel, Field, ConfigDict, model_validator
+
+from src.domain.value_object.enums import BodyPart
 
 class Armor(ABC, BaseModel):
     model_config = ConfigDict(validate_assignment=True)
@@ -8,6 +10,7 @@ class Armor(ABC, BaseModel):
                                              'чем выше, тем тяжелее броня')
     max_durability: int = Field(..., ge=0, le=320, description='Максимальная прочность брони')
     current_durability: int = Field(..., ge=0, description='Текущая прочность брони')
+    body_part: BodyPart
 
     @model_validator(mode='after')
     def validate_current_durability(self):
@@ -28,9 +31,3 @@ class HeadArmor(Armor):
 class BodyArmor(Armor):
     max_durability: int = Field(..., ge=0, le=320, description='Максимальная прочность брони для тела')
     price: int = Field(..., ge=0, le=7000, description='Цена брони для тела')
-
-class UniqueHeadArmor(HeadArmor):
-    pass
-
-class UniqueBodyArmor(BodyArmor):
-    pass
