@@ -1,6 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from src.domain.value_object.equipment_type import EquipmentType
+
+from src.domain.value_object.enums import EquipmentType
 
 class Equipment(ABC, BaseModel):
     model_config = ConfigDict(validate_assignment=True)
@@ -11,7 +12,6 @@ class Equipment(ABC, BaseModel):
     max_durability: int = Field(..., ge=0, le=100, frozen=True, description='Максимальная прочность')
     current_durability: int = Field(..., ge=0, le=100, description='Текущая прочность')
     peculiarities: object | None = Field(None, description='Особенности')
-    skills: list[object] = Field(..., description='Умения оружия')
 
     @model_validator(mode='after')
     def validate_current_durability(self):
