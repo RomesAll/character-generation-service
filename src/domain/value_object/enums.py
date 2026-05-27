@@ -1,12 +1,9 @@
 from enum import Enum
+from typing import TYPE_CHECKING
 
 class EquipmentType(Enum):
     OND_HAND = 'одноручный предмет'
     TWO_HAND = 'двуручный предмет'
-
-class StatEnum(Enum):
-    HEALTH = 'health'
-    HAND_SKILL = 'hand_skill'
 
 class BodyPart(Enum):
     HEAD = 'head'
