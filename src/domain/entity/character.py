@@ -2,11 +2,10 @@ from dataclasses import fields
 from pydantic import BaseModel, Field, ConfigDict, PrivateAttr
 import weakref, uuid
 
-from src.domain.entity.group_stat import GroupStat
 from src.domain.entity.fast_slot import ArmsFastSlot, ArmorFastSlot
 from src.domain.entity.arms import Arms
 from src.domain.entity.armor import HeadArmor, BodyArmor
-from src.domain.entity.stats import BaseStat
+from src.domain.entity.stats import BaseStat, GroupStat
 from src.domain.value_object.perk import Perk
 
 class Character(BaseModel):
@@ -53,12 +52,6 @@ class Character(BaseModel):
     def hide_arms_in_hand(self):
         self.__left_hand = None
         self.__right_hand = None
-
-    def level_up(self):
-        self.level += 1
-        for field in fields(self.stats):
-            stat: BaseStat = getattr(self.stats, field.name)
-            stat.level_up()
 
     @property
     def stats(self) -> GroupStat:
