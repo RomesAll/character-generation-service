@@ -25,7 +25,6 @@ class GenerateCustomStatMeta(type):
                     current=current,
                     maximum=maximum,
                 ))
-                # self.history_stats.appendleft(copy.deepcopy(self.stats_result))
                 return self
             return wrapper
         for stat in StatEnum:
@@ -35,7 +34,7 @@ class GenerateCustomStatMeta(type):
 
 class StatsService:
     def __init__(self):
-        self.builder_stats = StatsService.GenerateCustomStat()
+        self.builder_stats: 'StatsService.GenerateCustomStat' = StatsService.GenerateCustomStat()
 
     @property
     def current_stats(self):
@@ -81,9 +80,3 @@ class StatsService:
         def __init__(self):
             self.stats_result: GroupStat = GroupStat()
             self.history_stats: deque[GroupStat] = deque(maxlen=100)
-
-        def health(self, *, current: int, maximum: int) -> 'StatsService.GenerateCustomStat':
-            raise NotImplementedError()
-
-        def hand_skill(self, *, current: int, maximum: int) -> 'StatsService.GenerateCustomStat':
-            raise NotImplementedError()
