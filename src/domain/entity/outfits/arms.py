@@ -1,6 +1,6 @@
 from abc import ABC
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-
+from pathlib import Path
 from src.domain.value_object.enums import EquipmentType
 
 class Equipment(ABC, BaseModel):
@@ -12,6 +12,7 @@ class Equipment(ABC, BaseModel):
     max_durability: int = Field(..., ge=0, le=100, frozen=True, description='Максимальная прочность')
     current_durability: int = Field(..., ge=0, le=100, description='Текущая прочность')
     peculiarities: object | None = Field(None, description='Особенности')
+    image: Path
 
     @model_validator(mode='after')
     def validate_current_durability(self):
