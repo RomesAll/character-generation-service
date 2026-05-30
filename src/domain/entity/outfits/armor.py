@@ -1,4 +1,6 @@
 from abc import ABC
+from pathlib import Path
+
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 
 from src.domain.value_object.enums import BodyPart
@@ -11,6 +13,7 @@ class Armor(ABC, BaseModel):
     max_durability: int = Field(..., ge=0, le=320, description='Максимальная прочность брони')
     current_durability: int = Field(..., ge=0, description='Текущая прочность брони')
     body_part: BodyPart
+    image: Path
 
     @model_validator(mode='after')
     def validate_current_durability(self):
