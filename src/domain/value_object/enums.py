@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import TYPE_CHECKING
 
 class EquipmentType(Enum):
     OND_HAND = 'одноручный предмет'
@@ -14,3 +13,7 @@ class BodyPart(Enum):
 class Measurement(Enum):
     PERCENT = 'percent'
     UNITS = 'units'
+
+class StatEnum(Enum):
+    HEALTH = 'health'
+    HAND_SKILL = 'hand_skill'
