@@ -28,13 +28,12 @@ class ActionPoints(BaseStat):
 
     def append_multipliers(self, multiplier: 'MultiplierObject'):
         super().append_multipliers(multiplier)
-        self.current += abs(self.maximum - self.__value_stat_with_multipliers())
         self.maximum = self.__value_stat_with_multipliers()
 
     def remove_multipliers(self, multiplier: 'MultiplierObject'):
         super().remove_multipliers(multiplier)
-        self.current -= abs(self.maximum - self.__value_stat_with_multipliers())
         self.maximum = self.__value_stat_with_multipliers()
 
     def level_up(self):
-        self.current = min(self.current + 5, 100)
+        self.maximum = self.maximum + 5
+        self._basic = self._basic + 5
