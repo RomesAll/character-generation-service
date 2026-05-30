@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from pydantic import BaseModel, PrivateAttr, Field, model_validator
 from typing import TYPE_CHECKING
-from copy import deepcopy
 
-from src.domain.value_object.enums import StatEnum
+from src.domain.value_object.enums import StatEnum, Measurement
 
 if TYPE_CHECKING:
     from . import MultipliersList, MultiplierObject
@@ -21,11 +20,10 @@ class BaseStat(BaseModel, ABC):
             raise ValueError('Current value cannot be greater than maximum')
         return self
 
-    @abstractmethod
     def append_multipliers(self, multiplier: 'MultiplierObject'):
         self._multipliers.append(multiplier)
+        self.maximum = self.__value_stat_with_multipliers()
 
-    @abstractmethod
     def remove_multipliers(self, multiplier: 'MultiplierObject'):
         delete_object: 'MultiplierObject | None' = None
         for ind, obj in enumerate(start=0, iterable=self._multipliers):
@@ -34,10 +32,21 @@ class BaseStat(BaseModel, ABC):
                 break
         if not delete_object:
             raise ValueError(f'Multiplier {multiplier} not found')
+        self.maximum = self.__value_stat_with_multipliers()
 
-    @abstractmethod
+    def __value_stat_with_multipliers(self) -> int:
+        result = self._basic
+        for multiplier, measurement in self._multipliers:
+            match measurement:
+                case Measurement.UNITS:
+                    result += multiplier
+                case Measurement.PERCENT:
+                    result = round(result * (1 + multiplier / 100))
+        return result
+
     def level_up(self):
-        pass
+        self.maximum = self.maximum + 5
+        self._basic = self._basic + 5
 
     @property
     def basic(self) -> int:
