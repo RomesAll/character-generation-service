@@ -7,7 +7,7 @@ AmountPerk = NewType("AmountPerk", int)
 
 
 @dataclass(frozen=True)
-class PerkStat:
+class PerkMultiplier:
     stat: StatEnum
     amount: int
     measurement: Measurement
@@ -16,4 +16,4 @@ class PerkStat:
 @dataclass(frozen=True)
 class Perk:
     name: str
-    stats: list[PerkStat] = field(default_factory=list)
+    stats: list[PerkMultiplier] = field(default_factory=list)
