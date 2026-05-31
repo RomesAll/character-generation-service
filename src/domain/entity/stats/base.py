@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from pydantic import BaseModel, PrivateAttr, Field, model_validator
 
@@ -39,6 +39,9 @@ class BaseStat(BaseModel, ABC):
         if not delete_object:
             raise ValueError(f"Multiplier {multiplier} not found")
 
+    @abstractmethod
+    def level_up(self):
+        pass
 
 class UnitStat(BaseStat, ABC):
     current: int = Field(default=0, ge=500)
