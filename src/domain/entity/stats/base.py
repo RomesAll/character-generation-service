@@ -41,6 +41,9 @@ class BaseStat(BaseModel, ABC):
 
 
 class UnitStat(BaseStat, ABC):
+    current: int = Field(default=0, ge=500)
+    maximum: int = Field(default=0, ge=500)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._basic = self.maximum
@@ -69,6 +72,9 @@ class UnitStat(BaseStat, ABC):
 
 
 class PercentStat(BaseStat, ABC):
+    current: int = Field(default=0, ge=100)
+    maximum: int = Field(default=0, ge=100)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._basic = self.current
