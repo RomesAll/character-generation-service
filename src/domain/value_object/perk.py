@@ -1,13 +1,10 @@
 from dataclasses import dataclass, field
 from src.domain.value_object.enums import Measurement, StatEnum
-from typing import NewType
-
-NamePerk = NewType("NamePerk", str)
-AmountPerk = NewType("AmountPerk", int)
-
+import weakref
 
 @dataclass(frozen=True)
 class PerkMultiplier:
+    owner: weakref.ref['Perk']
     stat: StatEnum
     amount: int
     measurement: Measurement
@@ -16,4 +13,4 @@ class PerkMultiplier:
 @dataclass(frozen=True)
 class Perk:
     name: str
-    stats: list[PerkMultiplier] = field(default_factory=list)
+    multipliers: list[PerkMultiplier] = field(default_factory=list)
