@@ -28,6 +28,9 @@ class BaseStat(BaseModel, ABC):
         return self._multipliers.copy()
 
     def append_multipliers(self, multiplier: PerkMultiplier):
+        for perk_multiplier in self._multipliers:
+            if perk_multiplier == multiplier:
+                raise ValueError(f"Multiplier {multiplier} already exists")
         self._multipliers.append(multiplier)
 
     def remove_multipliers(self, multiplier: PerkMultiplier):
@@ -53,21 +56,21 @@ class UnitStat(BaseStat, ABC):
 
     def value_stat_with_multipliers(self) -> int:
         result = self._basic
-        for multiplier, measurement in self._multipliers:
-            match measurement:
+        for multiplier in self._multipliers:
+            match multiplier.measurement:
                 case Measurement.UNITS:
-                    result += multiplier
+                    result += multiplier.amount
                 case Measurement.PERCENT:
-                    result = round(result * (1 + multiplier / 100))
+                    result = round(result * (1 + multiplier.amount / 100))
         return result
 
     def append_multipliers(self, multiplier: PerkMultiplier):
         super().append_multipliers(multiplier)
-        self.maximum = self.__value_stat_with_multipliers()
+        self.maximum = self.value_stat_with_multipliers()
 
     def remove_multipliers(self, multiplier: PerkMultiplier):
         super().remove_multipliers(multiplier)
-        self.maximum = self.__value_stat_with_multipliers()
+        self.maximum = self.value_stat_with_multipliers()
 
     def level_up(self):
         self.maximum = self.maximum + 5
@@ -84,19 +87,19 @@ class PercentStat(BaseStat, ABC):
 
     def value_stat_with_multipliers(self) -> int:
         result = self._basic
-        for multiplier, measurement in self._multipliers:
-            match measurement:
+        for multiplier in self._multipliers:
+            match multiplier.measurement:
                 case Measurement.PERCENT:
-                    result += multiplier
+                    result += multiplier.amount
         return result
 
     def append_multipliers(self, multiplier: PerkMultiplier):
         super().append_multipliers(multiplier)
-        self.current = self.__value_stat_with_multipliers()
+        self.current = self.value_stat_with_multipliers()
 
     def remove_multipliers(self, multiplier: PerkMultiplier):
         super().remove_multipliers(multiplier)
-        self.current = self.__value_stat_with_multipliers()
+        self.current = self.value_stat_with_multipliers()
 
     def level_up(self):
         self.current = min(self.current + 5, 100)
