@@ -86,7 +86,7 @@ class ArmorFastSlot(BaseModel):
         model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
         body_part_name: BodyPart
-        armor: Armor | None = None
+        armor: Armor | HeadArmor | BodyArmor | None = None
 
         def equip(self, new_armor: Armor | None = None) -> Armor | None:
             if new_armor and self.body_part_name != new_armor.body_part:
