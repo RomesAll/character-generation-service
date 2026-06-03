@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field, ConfigDict, PrivateAttr
 
 from src.domain.entity.outfits import MeleeArms
 from src.domain.entity.stats import Damage
+from src.domain.exceptions import BodyPartArmorException
 from src.domain.value_object.enums import EquipmentType, BodyPart, StatEnum
 from src.domain.entity.outfits.arms import Equipment
 from src.domain.entity.outfits.armor import Armor, HeadArmor, BodyArmor
@@ -116,7 +117,7 @@ class ArmorFastSlot(BaseModel):
 
         def equip(self, new_armor: Armor | None = None) -> Armor | None:
             if new_armor and self.body_part_name != new_armor.body_part:
-                raise ValueError("Броня не подходит под данную часть тела")
+                raise BodyPartArmorException(new_armor, self.body_part_name)
             old_armor = self.armor
             self.armor = new_armor
             return old_armor

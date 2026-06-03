@@ -19,6 +19,7 @@ from src.domain.entity.stats.stats import (
     HeadHitChance,
 )
 from src.domain.entity.stats.base import BaseStat
+from src.domain.exceptions import LevelException
 from src.domain.value_object import StatEnum
 from src.domain.entity.stats.mapping import MAPPING_STATS
 from src.domain.value_object.perk import PerkMultiplier
@@ -160,7 +161,7 @@ class GroupStat(metaclass=BuilderStatMeta):
 
     def increment_level(self, amount: int) -> None:
         if self._level + amount > 3:
-            raise ValueError("Level cannot be greater than 3")
+            raise LevelException(self._level)
         for _ in range(amount):
             self._level += 1
             self.level_up()

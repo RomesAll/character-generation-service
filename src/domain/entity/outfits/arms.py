@@ -2,6 +2,7 @@ from abc import ABC
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 from pathlib import Path
 
+from src.domain.exceptions import CurrentGreaterMaximumException
 from src.domain.value_object.enums import EquipmentType
 
 
@@ -23,9 +24,7 @@ class Equipment(ABC, BaseModel):
     @model_validator(mode="after")
     def validate_current_durability(self):
         if self.current_durability > self.max_durability:
-            raise ValueError(
-                "Текущая прочность оружия не может быть больше максимальной"
-            )
+            raise CurrentGreaterMaximumException("Текущая прочность оружия не может быть больше максимальной")
         return self
 
     def take_damage(self, damage: int) -> None:

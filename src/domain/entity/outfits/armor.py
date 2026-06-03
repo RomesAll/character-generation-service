@@ -3,6 +3,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 
+from src.domain.exceptions import CurrentGreaterMaximumException
 from src.domain.value_object.enums import BodyPart
 
 
@@ -22,9 +23,7 @@ class Armor(ABC, BaseModel):
     @model_validator(mode="after")
     def validate_current_durability(self):
         if self.current_durability > self.max_durability:
-            raise ValueError(
-                "Текущая прочность брони не может быть больше максимальной"
-            )
+            raise CurrentGreaterMaximumException("Текущая прочность брони не может быть больше максимальной")
         return self
 
     def take_damage(self, damage: int) -> None:

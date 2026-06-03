@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from pydantic import BaseModel, PrivateAttr, Field, model_validator
 import copy
 
+from src.domain.exceptions import CurrentGreaterMaximumException, DuplicateMultiplierException, NotFoundMultiplierException
 from src.domain.value_object.enums import StatEnum, Measurement
 from src.domain.value_object.perk import PerkMultiplier
 
@@ -16,7 +17,8 @@ class BaseStat(BaseModel, ABC):
     @model_validator(mode="after")
     def validate_current_value(self):
         if self.current > self.maximum:
-            raise ValueError("Current value cannot be greater than maximum")
+            raise CurrentGreaterMaximumException(f"Текущее значение стата {self.current} не "
+                                        f"может быть больше максимального {self.maximum}")
         return self
 
     @property
@@ -30,7 +32,7 @@ class BaseStat(BaseModel, ABC):
     def append_multipliers(self, multiplier: PerkMultiplier):
         for perk_multiplier in self._multipliers:
             if perk_multiplier == multiplier:
-                raise ValueError(f"Multiplier {multiplier} already exists")
+                raise DuplicateMultiplierException(multiplier)
         self._multipliers.append(multiplier)
 
     def remove_multipliers(self, multiplier: PerkMultiplier):
@@ -40,7 +42,7 @@ class BaseStat(BaseModel, ABC):
                 delete_object = self._multipliers.pop(ind)
                 break
         if not delete_object:
-            raise ValueError(f"Multiplier {multiplier} not found")
+            raise NotFoundMultiplierException(f"Multiplier {multiplier} not found")
 
     @abstractmethod
     def level_up(self):

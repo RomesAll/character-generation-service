@@ -3,6 +3,7 @@ import weakref
 from dataclasses import dataclass, field
 from typing import NewType, Literal
 
+from src.domain.exceptions import DuplicatePerkException, NotFoundPerkException
 from src.domain.value_object.enums import Measurement, StatEnum
 from src.domain.value_object.perk import Perk, PerkMultiplier
 from typing import TYPE_CHECKING
@@ -32,7 +33,7 @@ class GroupPerk:
     ):
         for perk in self._perks:
             if perk.name == name:
-                raise ValueError('Duplicate perk name')
+                raise DuplicatePerkException(name)
         perk: Perk = Perk(name=name)
         for stat, amount, measurement in stats:
             perk.multipliers.append(PerkMultiplier(
@@ -55,7 +56,7 @@ class GroupPerk:
                         self._character().stats.remove_multipliers(multiplier)
                 self._perks.remove(perk)
                 return self
-        raise ValueError(f"Perk {name} not found")
+        raise NotFoundPerkException(name)
 
     def get_perk_by_name(self,
                          name: NamePerk,

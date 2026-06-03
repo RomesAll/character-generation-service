@@ -12,6 +12,8 @@ import uuid, weakref
 from .fast_slot import ArmsFastSlot, ArmorFastSlot
 from src.domain.entity.group_characteristics import GroupStat, GroupPerk
 from src.domain.entity.outfits import HeadArmor, BodyArmor, Equipment, Arms, MeleeArms
+from ...exceptions import CharacterTypeException, ImageFileException, UnsupportedExtensionException, \
+    FileNotFoundException
 
 
 class Character(BaseModel):
@@ -91,14 +93,14 @@ class Character(BaseModel):
     @stats.setter
     def stats(self, value: GroupStat) -> None:
         if not isinstance(value, GroupStat):
-            raise TypeError("stats must be GroupStat")
+            raise CharacterTypeException("Атрибут stats должен быть объектом GroupStat", value)
         self._stats = value
         self.perks.add_all_multiplier()
 
     @perks.setter
     def perks(self, value: GroupPerk) -> None:
         if not isinstance(value, GroupPerk):
-            raise TypeError("perks must be GroupPerk")
+            raise CharacterTypeException("Атрибут perks должен быть объектом GroupPerk", value)
         self._stats = self._stats.get_copy_without_multiplier()
         self._perks = value
         self.perks.add_all_multiplier()
@@ -106,19 +108,21 @@ class Character(BaseModel):
     @arms_slot.setter
     def arms_slot(self, value: ArmsFastSlot) -> None:
         if not isinstance(value, ArmsFastSlot):
-            raise TypeError("arms_slot must be ArmsFastSlot")
+            raise CharacterTypeException("Атрибут arms_slot должен быть объектом ArmsFastSlot", value)
         self._arms_slot = value
 
     @armor_slot.setter
     def armor_slot(self, value: ArmorFastSlot) -> None:
         if not isinstance(value, ArmorFastSlot):
-            raise TypeError("armor_slot must be ArmorFastSlot")
+            raise CharacterTypeException("Атрибут armor_slot должен быть объектом ArmorFastSlot", value)
         self._armor_slot = value
 
     @field_validator("image", mode="after")
     def validate_image(cls, v: Path):
+        if not v.exists():
+            raise FileNotFoundException(v)
         if not v.is_file():
-            raise FileNotFoundError("Image must be a file")
+            raise ImageFileException(v)
         if v.suffix not in [".png", ".jpg", ".webp"]:
-            raise ValueError("Image must be a .png or .jpg image")
+            raise UnsupportedExtensionException(v)
         return v
