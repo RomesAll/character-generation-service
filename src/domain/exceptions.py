@@ -84,3 +84,97 @@ class NamePerkException(DomainException):
 class PerkMultiplierException(DomainException):
     pass
 
+class CurrentGreaterMaximumException(DomainException):
+    pass
+
+class DuplicateMultiplierException(DomainException):
+    def __init__(self, multiplier):
+        self.message = f'Модификатор {multiplier} уже содержится в стате'
+        self.error_code = 'DUPLICATE-MULTIPLIER-STAT-ERROR'
+        self.details = {
+            'multiplier': multiplier,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class NotFoundMultiplierException(DomainException):
+    def __init__(self, multiplier):
+        self.message = f'Модификатор {multiplier} уже найден'
+        self.error_code = 'NOT-FOUND-MULTIPLIER-STAT-ERROR'
+        self.details = {
+            'multiplier': multiplier,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class LevelException(DomainException):
+    def __init__(self, level: int):
+        self.message = f'Левел статов персонажа должен быть от 0 до 3, сейчас: {level}'
+        self.error_code = 'LEVEL-ERROR'
+        self.details = {
+            'level': level,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class DuplicatePerkException(DomainException):
+    def __init__(self, perk_name: str):
+        self.message = f'Перк {perk_name} уже содержится есть в коллекции'
+        self.error_code = 'DUPLICATE-PERK-NAME-STAT-ERROR'
+        self.details = {
+            'perk_name': perk_name,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class NotFoundPerkException(DomainException):
+    def __init__(self, perk_name: str):
+        self.message = f'Перк {perk_name} не найден'
+        self.error_code = 'NOT-FOUND-PERK-NAME-STAT-ERROR'
+        self.details = {
+            'perk_name': perk_name,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class BodyPartArmorException(DomainException):
+    def __init__(self, new_armor: object, body_part_name: object):
+        self.message = f'Броня {new_armor} не подходит по часть тела {body_part_name}'
+        self.error_code = 'BODY-PART-ARMOR-ERROR'
+        self.details = {
+            'new_armor': new_armor,
+            'body_part_name': body_part_name,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class CharacterTypeException(DomainException):
+    def __init__(self, message: str, error_type_object: object):
+        self.message = message
+        self.message += f'. Передан объект: {type(error_type_object)}'
+        self.error_code = 'CHARACTER-TYPE-ERROR'
+        self.details = {
+            'error_type_object': error_type_object,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class ImageFileException(DomainException):
+    def __init__(self, image: object):
+        self.message = f'Объект изображения {image} должен быть файлом'
+        self.error_code = 'IMAGE-FILE-ERROR'
+        self.details = {
+            'image': image,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class UnsupportedExtensionException(DomainException):
+    def __init__(self, image: object):
+        self.message = f'Объект изображения {image} должен быть файлом с расширением .png, .jpg, .webp'
+        self.error_code = 'IMAGE-EXTENSION-FILE-ERROR'
+        self.details = {
+            'image': image,
+        }
+        super().__init__(self.message, self.error_code, self.details)
+
+class FileNotFoundException(DomainException):
+    def __init__(self, image: object):
+        self.message = f'Объект изображения {image} не найден'
+        self.error_code = 'IMAGE-NOT-FOUND-ERROR'
+        self.details = {
+            'image': image,
+        }
+        super().__init__(self.message, self.error_code, self.details)
