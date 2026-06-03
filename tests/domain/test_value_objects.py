@@ -1,6 +1,7 @@
 from copy import copy
 
-from src.domain.exceptions import InvalidReferenceException, StatEnumTypeException
+from src.domain.exceptions import InvalidReferenceException, StatEnumTypeException, NamePerkException, \
+    PerkMultiplierException
 from src.domain.value_object import Measurement, StatEnum
 from src.domain.value_object.perk import Perk, PerkMultiplier
 from contextlib import nullcontext
@@ -67,3 +68,17 @@ class TestPerkMultiplier:
                 amount=amount,
                 measurement=measurement
             )
+
+class TestPerk:
+    def test_create(self):
+        perk = Perk(name='perk1')
+        assert perk.name == 'perk1'
+        assert len(perk.multipliers) == 0
+
+    def test_name_perk_exception(self):
+        with pytest.raises(NamePerkException):
+            Perk(name='p')
+
+    def test_multiplier_perk_exception(self):
+        with pytest.raises(PerkMultiplierException):
+            Perk(name='perk1', multipliers=[None, None])
