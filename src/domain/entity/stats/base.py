@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-
 from pydantic import BaseModel, PrivateAttr, Field, model_validator
+import copy
 
 from src.domain.value_object.enums import StatEnum, Measurement
 from src.domain.value_object.perk import PerkMultiplier
@@ -24,8 +24,8 @@ class BaseStat(BaseModel, ABC):
         return self._basic
 
     @property
-    def multipliers(self):
-        return self._multipliers.copy()
+    def multipliers(self) -> list[PerkMultiplier]:
+        return copy.deepcopy(self._multipliers)
 
     def append_multipliers(self, multiplier: PerkMultiplier):
         for perk_multiplier in self._multipliers:
@@ -45,6 +45,15 @@ class BaseStat(BaseModel, ABC):
     @abstractmethod
     def level_up(self):
         pass
+
+    def get_copy(self) -> 'BaseStat':
+        return copy.deepcopy(self)
+
+    def get_copy_without_multipliers(self) -> 'BaseStat':
+        copy_obj = copy.deepcopy(self)
+        for multiplier in self._multipliers:
+            copy_obj.remove_multipliers(multiplier)
+        return copy_obj
 
 class UnitStat(BaseStat, ABC):
     current: int = Field(default=0, ge=500)
