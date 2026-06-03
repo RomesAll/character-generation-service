@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from src.domain.entity.exceptions import InvalidReferenceException, PerkTypeException, StatEnumTypeException, \
+from src.domain.exceptions import InvalidReferenceException, PerkTypeException, StatEnumTypeException, \
     MultiplierAmountTypeException, MeasurementTypeException, NamePerkException, PerkMultiplierException
 from src.domain.value_object.enums import Measurement, StatEnum
 import weakref
