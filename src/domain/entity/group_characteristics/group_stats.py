@@ -159,14 +159,10 @@ class GroupStat(metaclass=BuilderStatMeta):
     def get_stat(self, stat_enum_object: StatEnum) -> BaseStat:
         return getattr(self, "_" + stat_enum_object.value)
 
-    def increment_level(self, amount: int) -> None:
-        if self._level + amount > 3:
-            raise LevelException(self._level)
-        for _ in range(amount):
-            self._level += 1
-            self.level_up()
-
     def level_up(self) -> None:
+        if self._level + 1 > 3:
+            raise LevelException(self._level)
+        self._level += 1
         for current_field in fields(self):
             if current_field.name == "_level":
                 continue
