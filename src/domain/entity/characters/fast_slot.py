@@ -4,15 +4,30 @@ import weakref
 from pydantic import BaseModel, Field, ConfigDict, PrivateAttr
 
 from src.domain.entity.outfits import MeleeArms
-from src.domain.entity.stats import Damage
+from src.domain.entity.stats import Damage, BaseStat
 from src.domain.exceptions import BodyPartArmorException
 from src.domain.value_object.enums import EquipmentType, BodyPart, StatEnum
 from src.domain.entity.outfits.arms import Equipment
 from src.domain.entity.outfits.armor import Armor, HeadArmor, BodyArmor
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
+
 if TYPE_CHECKING:
     from src.domain.entity.characters.character import Character
+
+def change_damage_stat(func: Callable) -> Callable:
+    def wrapper(self: 'ArmsFastSlot.ManageHandItem', *args, **kwargs):
+        result: None | Equipment | MeleeArms  = func(self, *args, **kwargs)
+        character = self.outer().get_character()()
+        current_damage_stat: BaseStat = character.stats.get_stat(StatEnum.DAMAGE)
+        if type(result) is MeleeArms:
+            current_damage_stat.current -= result.damage
+            current_damage_stat.maximum -= result.damage
+        if type(args[0]) is MeleeArms:
+            current_damage_stat.current += args[0].damage
+            current_damage_stat.maximum += args[0].damage
+        return result
+    return wrapper
 
 class ArmsFastSlot(BaseModel):
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
@@ -45,6 +60,9 @@ class ArmsFastSlot(BaseModel):
     def get_copy(self) -> "ArmsFastSlot":
         return copy.deepcopy(self)
 
+    def get_character(self) -> "weakref.ref[Character]":
+        return self._character
+
     class ManageHandItem(BaseModel):
         model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
@@ -53,6 +71,7 @@ class ArmsFastSlot(BaseModel):
         other_hand: "ArmsFastSlot.ManageHandItem | None" = Field(None, repr=False)
         outer: weakref.ref['ArmsFastSlot']
 
+        @change_damage_stat
         def equip(
             self, item: Equipment | None = None
         ) -> Equipment | tuple[Equipment, ...] | tuple[None, ...] | None:
@@ -67,14 +86,6 @@ class ArmsFastSlot(BaseModel):
             if old_item_self and old_item_self.type_equipment == EquipmentType.TWO_HAND:
                 self.other_hand.item_in_hand = None
             self.item_in_hand = item
-            if self.outer()._character and old_item_self and type(old_item_self) is MeleeArms:
-                damage_stat: Damage = getattr(self.outer()._character().stats, '_' + StatEnum.DAMAGE.value)
-                damage_stat.current -= old_item_self.damage
-                damage_stat.maximum -= old_item_self.damage
-            if self.outer()._character and item and type(item) is MeleeArms:
-                damage_stat: Damage = getattr(self.outer()._character().stats, '_' + StatEnum.DAMAGE.value)
-                damage_stat.current += item.damage
-                damage_stat.maximum += item.damage
             return old_item_self
 
         def unequip(
