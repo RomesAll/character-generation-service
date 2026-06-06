@@ -1,83 +1,59 @@
-import copy
-import weakref
 from dataclasses import dataclass, field
-from typing import NewType, Literal
+from typing import Self
+import copy, weakref
 
-from src.domain.exceptions import DuplicatePerkException, NotFoundPerkException
-from src.domain.value_object.enums import Measurement, StatEnum
+from src.domain.entity.group_characteristics.decorators import (
+    check_duplicate_perk,
+    add_multiplier_in_character,
+    check_existing_perk,
+    remove_multiplier_in_character,
+)
+from src.domain.entity.group_characteristics.group_stats import GroupStat
 from src.domain.value_object.perk import Perk, PerkMultiplier
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from src.domain.entity.characters import Character
-    from src.domain.entity.stats import BaseStat
-
-NamePerk = NewType("NamePerk", str)
-AmountPerk = NewType("AmountPerk", int)
 
 
 @dataclass
 class GroupPerk:
-    _perks: list[Perk] = field(default_factory=list)
-    _character: weakref.ref['Character'] | None = field(default=None, init=False)
+    _perks: list[Perk] = field(default_factory=list, init=False)
+    _group_stats_ref: weakref.ref["GroupStat"] | None = field(
+        default=None, compare=False, repr=False, init=False
+    )
+
+    def __init__(self, group_stats: weakref.ref["GroupStat"] | None = None) -> None:
+        super().__init__()
+        self._group_stats_ref = group_stats
+        self._perks = []
 
     @property
     def perks(self) -> list[Perk]:
         return copy.deepcopy(self._perks)
 
-    def get_copy(self) -> 'GroupPerk':
+    @property
+    def group_stats(self):
+        return self._group_stats_ref() if self._group_stats_ref else None
+
+    @group_stats.setter
+    def group_stats(self, value: weakref.ref["GroupStat"]):
+        self._group_stats_ref = value
+
+    def get_copy(self) -> "GroupPerk":
         return copy.deepcopy(self)
 
-    def add(
-        self, name: NamePerk, stats: list[tuple[StatEnum, AmountPerk, Measurement]]
-    ):
-        for perk in self._perks:
-            if perk.name == name:
-                raise DuplicatePerkException(name)
-        perk: Perk = Perk(name=name)
-        for stat, amount, measurement in stats:
-            perk.multipliers.append(PerkMultiplier(
-                owner=weakref.ref(perk),
-                stat=stat,
-                amount=amount,
-                measurement=measurement
-            ))
-        self._perks.append(perk)
-        if self._character:
-            for multiplier in perk.multipliers:
-                self._character().stats.append_multipliers(multiplier)
+    @check_duplicate_perk
+    @add_multiplier_in_character
+    def add(self, *, name_perk: str, multipliers: list[PerkMultiplier]) -> Self:
+        new_perk = Perk(name_perk, multipliers=tuple(multipliers))
+        self._perks.append(new_perk)
         return self
 
-    def remove(self, name: NamePerk):
-        for perk in self._perks:
-            if perk.name == name:
-                if self._character:
-                    for multiplier in perk.multipliers:
-                        self._character().stats.remove_multipliers(multiplier)
-                self._perks.remove(perk)
-                return self
-        raise NotFoundPerkException(name)
+    @check_existing_perk
+    @remove_multiplier_in_character
+    def remove(self, *, name_perk: str, **kwargs) -> Self:
+        perk_ind: int = kwargs.get("perk_ind")
+        self._perks.pop(perk_ind)
+        return self
 
-    def get_perk_by_name(self,
-                         name: NamePerk,
-                         direction: Literal['left', 'right'] = 'left',
-                         default: int | None = -1) -> Perk | None:
-        _direction = self._perks
-        if direction == 'right':
-            _direction = self._perks[::-1]
-        for perk in _direction:
-            if perk.name == name:
-                return perk
-        if default is None:
-            return None
-        raise ValueError('No perk found')
-
-    def add_all_multiplier(self):
-        for perk in self._perks:
-            self.add_multiplier(perk=perk)
-
-    def add_multiplier(self, perk: Perk):
-        for multiplier in perk.multipliers:
-            if self._character:
-                stat_obj: 'BaseStat' = self._character().stats.get_stat(multiplier.stat)
-                stat_obj.append_multipliers(multiplier)
+    @check_existing_perk
+    def get_perk_by_name(self, *, name_perk: str, **kwargs) -> Perk:
+        perk_ind: int = kwargs.get("perk_ind")
+        return self._perks[perk_ind]
