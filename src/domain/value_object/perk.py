@@ -12,6 +12,9 @@ from src.domain.value_object.enums import Measurement, StatEnum
 
 @dataclass(frozen=True)
 class PerkMultiplier:
+    """
+    Хранения информации о модификаторах перка
+    """
     stat: StatEnum
     amount: int
     measurement: Measurement
@@ -44,6 +47,9 @@ class PerkMultiplier:
 
 @dataclass(frozen=True)
 class Perk:
+    """
+    Хранения информации о перке
+    """
     name: str
     multipliers: tuple["PerkMultiplier", ...] = field(default_factory=tuple)
 

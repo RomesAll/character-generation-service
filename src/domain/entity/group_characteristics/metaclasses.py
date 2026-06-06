@@ -7,6 +7,9 @@ if TYPE_CHECKING:
 from src.domain.entity.stats import MAPPING_STATS
 
 class BuilderStatMeta(type):
+    """
+    Метакласс для динамического добавление методов для сеттеров и геттеров всех статов
+    """
     def __new__(cls, name, bases, attrs: dict):
         def crete_getter_method(stat_enum_object: 'StatEnum'):
             @property

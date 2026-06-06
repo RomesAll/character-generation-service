@@ -8,6 +8,9 @@ from src.domain.value_object.perk import PerkMultiplier
 
 
 class BaseStat(BaseModel, ABC):
+    """
+    Абстрактный класс для хранения информации о статах
+    """
     name: StatEnum = Field(..., frozen=True)
     current: int = Field(default=0, ge=0)
     maximum: int = Field(default=0, ge=0)
@@ -16,6 +19,10 @@ class BaseStat(BaseModel, ABC):
 
     @model_validator(mode="after")
     def validate_current_value(self):
+        """
+        Проверка корректности текущего и максимального значения
+        :return:
+        """
         if self.current > self.maximum:
             raise CurrentGreaterMaximumException(f"Текущее значение стата {self.current} не "
                                         f"может быть больше максимального {self.maximum}")
@@ -23,19 +30,37 @@ class BaseStat(BaseModel, ABC):
 
     @property
     def basic(self) -> int:
+        """
+        Получить базовое значение
+        :return:
+        """
         return self._basic
 
     @property
     def multipliers(self) -> list[PerkMultiplier]:
+        """
+        Получить копию модификаторов перка
+        :return:
+        """
         return copy.deepcopy(self._multipliers)
 
     def append_multipliers(self, multiplier: PerkMultiplier):
+        """
+        Добавить модификатор перка
+        :param multiplier:
+        :return:
+        """
         for perk_multiplier in self._multipliers:
             if perk_multiplier == multiplier:
                 raise DuplicateMultiplierException(multiplier)
         self._multipliers.append(multiplier)
 
     def remove_multipliers(self, multiplier: PerkMultiplier):
+        """
+        Удалить модификатор перка
+        :param multiplier:
+        :return:
+        """
         delete_object: PerkMultiplier | None = None
         for ind, perk_multiplier in enumerate(start=0, iterable=self._multipliers):
             if perk_multiplier == multiplier:
@@ -49,15 +74,26 @@ class BaseStat(BaseModel, ABC):
         pass
 
     def get_copy(self) -> 'BaseStat':
+        """
+        Получить копию BaseStat
+        :return:
+        """
         return copy.deepcopy(self)
 
     def get_copy_without_multipliers(self) -> 'BaseStat':
+        """
+        Получить копию BaseStat без модификаторов
+        :return:
+        """
         copy_obj = copy.deepcopy(self)
         for multiplier in self._multipliers:
             copy_obj.remove_multipliers(multiplier)
         return copy_obj
 
 class UnitStat(BaseStat, ABC):
+    """
+    Хранения информации о статах, которые принимают единицы
+    """
     current: int = Field(default=0, ge=500)
     maximum: int = Field(default=0, ge=500)
 
@@ -66,6 +102,10 @@ class UnitStat(BaseStat, ABC):
         self._basic = self.maximum
 
     def value_stat_with_multipliers(self) -> int:
+        """
+        Подсчет модификаторов статов
+        :return:
+        """
         result = self._basic
         for multiplier in self._multipliers:
             match multiplier.measurement:
@@ -89,6 +129,9 @@ class UnitStat(BaseStat, ABC):
 
 
 class PercentStat(BaseStat, ABC):
+    """
+    Хранения информации о статах, которые принимают проценты
+    """
     current: int = Field(default=0, ge=100)
     maximum: int = Field(default=0, ge=100)
 
@@ -97,6 +140,10 @@ class PercentStat(BaseStat, ABC):
         self._basic = self.current
 
     def value_stat_with_multipliers(self) -> int:
+        """
+        Подсчет модификаторов статов
+        :return:
+        """
         result = self._basic
         for multiplier in self._multipliers:
             match multiplier.measurement:

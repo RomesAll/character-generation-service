@@ -47,12 +47,24 @@ class GroupStat(metaclass=BuilderStatMeta):
 
     @property
     def level(self) -> int:
+        """
+        Получить уровень статов
+        :return:
+        """
         return self._level
 
     def get_copy(self) -> "GroupStat":
+        """
+        Получить копию группы статов
+        :return:
+        """
         return copy.deepcopy(self)
 
     def get_copy_without_multiplier(self) -> 'GroupStat':
+        """
+        Получить копию группы статов без модификаторов
+        :return:
+        """
         copy_obj = copy.copy(self)
         for stat in StatEnum:
             current_stat: BaseStat = getattr(copy_obj, stat.value)
@@ -60,6 +72,10 @@ class GroupStat(metaclass=BuilderStatMeta):
         return copy_obj
 
     def level_up(self) -> None:
+        """
+        Увеличить уровень
+        :return:
+        """
         if self._level + 1 > 3:
             raise LevelException(self._level)
         self._level += 1
@@ -68,9 +84,19 @@ class GroupStat(metaclass=BuilderStatMeta):
             current_stat.level_up()
 
     def append_multipliers(self, multiplier: PerkMultiplier):
+        """
+        Добавить модификатор
+        :param multiplier:
+        :return:
+        """
         stat: BaseStat = getattr(self, multiplier.stat.value)
         stat.append_multipliers(multiplier)
 
     def remove_multipliers(self, multiplier: PerkMultiplier):
+        """
+        Удалить модификатор
+        :param multiplier:
+        :return:
+        """
         stat: BaseStat = getattr(self, multiplier.stat.value)
         stat.remove_multipliers(multiplier)

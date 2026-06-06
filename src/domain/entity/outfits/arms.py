@@ -7,6 +7,9 @@ from src.domain.value_object.enums import EquipmentType
 
 
 class Equipment(ABC, BaseModel):
+    """
+    Абстрактный класс для хранения информации о предметах, которые можно подобрать
+    """
     model_config = ConfigDict(validate_assignment=True)
 
     name: str = Field(..., frozen=True, description="Название оружия")
@@ -37,6 +40,9 @@ class Equipment(ABC, BaseModel):
 
 
 class Arms(Equipment, ABC):
+    """
+    Хранения информации об оружии
+    """
     damage: tuple[int, int] = Field(..., description="Урон оружия в диапазоне")
     ignore_armor: int = Field(..., ge=0, le=100, description="Игнорирование брони в %")
     damage_armor: int = Field(..., ge=0, le=100, description="Урон по броне в %")
@@ -50,13 +56,22 @@ class Arms(Equipment, ABC):
 
 
 class MeleeArms(Arms):
+    """
+    Хранения информации о ближнем оружии
+    """
     pass
 
 
 class RangedArms(Arms):
+    """
+    Хранения информации о дальнем оружие
+    """
     range: int = Field(..., ge=0, description="Дальность выстрела")
 
 
 class ShieldArms(Equipment):
-    hand_protection: int = Field(..., ge=1, description="Рукопашная защита")
+    """
+    Хранения информации о щитах
+    """
+    melee_defense: int = Field(..., ge=1, description="Рукопашная защита")
     shooting_protection: int = Field(..., ge=1, description="Стрелковая защита")
