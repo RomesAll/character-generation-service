@@ -17,6 +17,7 @@ class Measurement(Enum):
 class StatEnum(Enum):
     HEALTH = 'health'
     HAND_SKILL = 'hand_skill'
+    HEAD_ARMOR = 'head_armor'
     BODY_ARMOR = 'body_armor'
     ACTION_POINT = 'action_point'
     BRAVERY = 'bravery'

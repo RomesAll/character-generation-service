@@ -1,7 +1,10 @@
-from pydantic import Field
+from pydantic import Field, model_validator
 from .base import UnitStat, PercentStat
 from src.domain.value_object import StatEnum
+from ...exceptions import CurrentGreaterMaximumException
 
+min_damage = int
+max_damage = int
 
 class Health(UnitStat):
     current: int = Field(default=0, ge=0, le=200)
@@ -44,12 +47,29 @@ class ShootingProtection(UnitStat):
     maximum: int = Field(default=0, ge=0, le=150)
     name: "StatEnum" = StatEnum.SHOOTING_PROTECTION
 
+class HeadArmor(UnitStat):
+    current: int = Field(default=0, ge=0, le=400)
+    maximum: int = Field(default=0, ge=0, le=400)
+    name: "StatEnum" = StatEnum.HEAD_ARMOR
+
+
+class BodyArmor(UnitStat):
+    current: int = Field(default=0, ge=0, le=600)
+    maximum: int = Field(default=0, ge=0, le=600)
+    name: "StatEnum" = StatEnum.BODY_ARMOR
+
 
 class Damage(UnitStat):
-    current: int = Field(default=0, ge=0, le=220)
-    maximum: int = Field(default=0, ge=0, le=220)
+    current: tuple[min_damage, max_damage] = Field(default=(0, 0))
+    maximum: max_damage = Field(default=0, ge=0, le=400)
     name: "StatEnum" = StatEnum.DAMAGE
 
+    @model_validator(mode="after")
+    def validate_current_value(self):
+        if self.current[1] > self.maximum:
+            raise CurrentGreaterMaximumException(f"Текущее значение стата {self.current} не "
+                                        f"может быть больше максимального {self.maximum}")
+        return self
 
 class Visibility(UnitStat):
     current: int = Field(default=0, ge=0, le=10)
