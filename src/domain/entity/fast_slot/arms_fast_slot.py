@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict, PrivateAttr
 from typing import TYPE_CHECKING
 import copy, weakref
 
-from src.domain.entity.fast_slot.decorators import change_damage_stats
+from src.domain.entity.fast_slot.decorators import change_character_stats
 from src.domain.entity.group_characteristics.group_stats import GroupStat
 from src.domain.value_object.enums import EquipmentType, BodyPart
 from src.domain.entity.outfits.arms import Equipment
@@ -100,7 +100,7 @@ class ArmsFastSlot(BaseModel):
         # # внешняя ссылка на ArmorFastSlot
         outer: weakref.ref["ArmsFastSlot"]
 
-        @change_damage_stats
+        @change_character_stats
         def equip(
             self, *, item: Equipment | None = None
         ) -> Equipment | tuple[Equipment, ...] | tuple[None, ...] | None:
@@ -127,7 +127,6 @@ class ArmsFastSlot(BaseModel):
         ) -> Equipment | tuple[Equipment, ...] | tuple[None, ...] | None:
             """
             Снятия предмета из слота персонажа
-            :param item:
             :return:
             """
             return self.equip(item=None)

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict, PrivateAttr
 import copy, weakref
 
-from src.domain.entity.fast_slot.decorators import change_armor_stats
+from src.domain.entity.fast_slot.decorators import change_character_stats
 from src.domain.exceptions import BodyPartArmorException
 from src.domain.value_object.enums import BodyPart
 from src.domain.entity.outfits.armor import Armor, HeadArmor, BodyArmor
@@ -93,7 +93,7 @@ class ArmorFastSlot(BaseModel):
         # внешняя ссылка на ArmorFastSlot
         outer: weakref.ref["ArmorFastSlot"]
 
-        @change_armor_stats
+        @change_character_stats
         def equip(self, *, item: Armor | None = None) -> Armor | None:
             """
             Установка брони в слот персонажа
