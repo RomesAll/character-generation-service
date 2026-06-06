@@ -9,6 +9,8 @@ from src.domain.entity.group_characteristics.decorators import (
     remove_multiplier_in_character,
 )
 from src.domain.entity.group_characteristics.group_stats import GroupStat
+from src.domain.entity.stats import BaseStat
+from src.domain.exceptions import GroupStatsRefNotFoundException, DuplicateMultiplierException
 from src.domain.value_object.perk import Perk, PerkMultiplier
 
 
@@ -57,3 +59,14 @@ class GroupPerk:
     def get_perk_by_name(self, *, name_perk: str, **kwargs) -> Perk:
         perk_ind: int = kwargs.get("perk_ind")
         return self._perks[perk_ind]
+
+    def refresh_all_multiplier(self):
+        if not self.group_stats:
+            raise GroupStatsRefNotFoundException()
+        for perk in self._perks:
+            for multiplier in perk.multipliers:
+                try:
+                    stat: BaseStat = getattr(self.group_stats, multiplier.stat.value)
+                    stat.append_multipliers(multiplier)
+                except DuplicateMultiplierException:
+                    continue

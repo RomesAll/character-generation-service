@@ -178,3 +178,9 @@ class FileNotFoundException(DomainException):
             'image': image,
         }
         super().__init__(self.message, self.error_code, self.details)
+
+class GroupStatsRefNotFoundException(DomainException):
+    def __init__(self):
+        self.message = 'Ссылка на group_stats не найдена'
+        self.error_code = 'REF-FOUND-ERROR'
+        super().__init__(self.message, self.error_code)

@@ -9,9 +9,9 @@ from pydantic import (
 )
 import uuid, weakref
 
-from .fast_slot import ArmsFastSlot, ArmorFastSlot
 from src.domain.entity.group_characteristics import GroupStat, GroupPerk
-from src.domain.entity.outfits import HeadArmor, BodyArmor, Equipment, Arms, MeleeArms
+from src.domain.entity.outfits import HeadArmor, BodyArmor, Equipment
+from ..fast_slot import ArmsFastSlot, ArmorFastSlot
 from ...exceptions import CharacterTypeException, ImageFileException, UnsupportedExtensionException, \
     FileNotFoundException
 
@@ -39,16 +39,15 @@ class Character(BaseModel):
         right_hand: Equipment | None = None,
     ):
         super().__init__(id=character_id, name=name, image=image)
-        self._stats._character = weakref.ref(self)
-        self._perks._character = weakref.ref(self)
-        self._arms_slot._character = weakref.ref(self)
-        self._armor_slot._character = weakref.ref(self)
-        self._armor_slot.head.equip(head)
-        self._armor_slot.body.equip(body)
+        self.perks.group_stats = weakref.ref(self.stats)
+        self.arms_slot.group_stat = weakref.ref(self.stats)
+        self.armor_slot.group_stat = weakref.ref(self.stats)
+        self.armor_slot.head.equip(head)
+        self.armor_slot.body.equip(body)
         if left_hand:
-            self._arms_slot.left_hand.equip(left_hand)
+            self.arms_slot.left_hand.equip(left_hand)
         if right_hand:
-            self._arms_slot.right_hand.equip(right_hand)
+            self.arms_slot.right_hand.equip(right_hand)
 
     @computed_field
     @property
@@ -95,7 +94,7 @@ class Character(BaseModel):
         if not isinstance(value, GroupStat):
             raise CharacterTypeException("Атрибут stats должен быть объектом GroupStat", value)
         self._stats = value
-        self.perks.add_all_multiplier()
+        self.perks.refresh_all_multiplier()
 
     @perks.setter
     def perks(self, value: GroupPerk) -> None:
@@ -103,7 +102,7 @@ class Character(BaseModel):
             raise CharacterTypeException("Атрибут perks должен быть объектом GroupPerk", value)
         self._stats = self._stats.get_copy_without_multiplier()
         self._perks = value
-        self.perks.add_all_multiplier()
+        self.perks.refresh_all_multiplier()
 
     @arms_slot.setter
     def arms_slot(self, value: ArmsFastSlot) -> None:
