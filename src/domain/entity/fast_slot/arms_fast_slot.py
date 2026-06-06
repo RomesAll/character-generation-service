@@ -82,4 +82,4 @@ class ArmsFastSlot(BaseModel):
         def unequip(
             self,
         ) -> Equipment | tuple[Equipment, ...] | tuple[None, ...] | None:
-            return self.equip(None)
+            return self.equip(item=None)

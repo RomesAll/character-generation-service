@@ -57,12 +57,12 @@ class ArmorFastSlot(BaseModel):
         outer: weakref.ref["ArmorFastSlot"]
 
         @change_armor_stats
-        def equip(self, new_armor: Armor | None = None) -> Armor | None:
-            if new_armor and self.body_part_name != new_armor.body_part:
-                raise BodyPartArmorException(new_armor, self.body_part_name)
+        def equip(self, *, item: Armor | None = None) -> Armor | None:
+            if item and self.body_part_name != item.body_part:
+                raise BodyPartArmorException(item, self.body_part_name)
             old_armor = self.armor
-            self.armor = new_armor
+            self.armor = item
             return old_armor
 
         def unequip(self) -> Armor | None:
-            return self.equip(None)
+            return self.equip(item=None)
