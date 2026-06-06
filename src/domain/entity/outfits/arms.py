@@ -37,16 +37,16 @@ class Equipment(ABC, BaseModel):
 
 
 class Arms(Equipment, ABC):
-    damage: int = Field(..., description="Урон оружия в диапазоне")
+    damage: tuple[int, int] = Field(..., description="Урон оружия в диапазоне")
     ignore_armor: int = Field(..., ge=0, le=100, description="Игнорирование брони в %")
     damage_armor: int = Field(..., ge=0, le=100, description="Урон по броне в %")
     max_endurance: int = Field(..., description="Максимальная выносливость")
 
-    # @model_validator(mode="after")
-    # def validate_damage_difficulty(self):
-    #     if self.damage[1] - self.damage[0] < 0:
-    #         raise ValueError("Максимальный урон не может быть меньше минимального")
-    #     return self
+    @model_validator(mode="after")
+    def validate_damage_difficulty(self):
+        if self.damage[1] - self.damage[0] < 0:
+            raise ValueError("Максимальный урон не может быть меньше минимального")
+        return self
 
 
 class MeleeArms(Arms):
