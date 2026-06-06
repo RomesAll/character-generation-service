@@ -1,22 +1,24 @@
+import weakref
 from pathlib import Path
 
 import pytest
 from src.domain.entity.fast_slot import ArmsFastSlot, ArmorFastSlot
+from src.domain.entity.group_characteristics import GroupStat
 from src.domain.entity.outfits import HeadArmor, BodyArmor, MeleeArms
 from src.domain.value_object import EquipmentType, BodyPart
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def armor_slot():
     return ArmorFastSlot()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def arms_slot():
     return ArmsFastSlot()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def outfits():
     arms = MeleeArms(
         name="sword",
@@ -91,6 +93,27 @@ class TestArmorFastSlot:
         assert copy_armor_slot.body.armor is None
         assert copy_armor_slot.head.armor is None
 
+    def test_change_character_stats(self, armor_slot, arms_slot, outfits):
+        group_stat = GroupStat()
+        armor_slot.group_stat = weakref.ref(group_stat)
+        arms_slot.group_stat = weakref.ref(group_stat)
+
+        armor_slot.head.equip(item=outfits.get("helmet"))
+        armor_slot.body.equip(item=outfits.get("plate"))
+        arms_slot.left_hand.equip(item=outfits.get("arms_two_hand"))
+
+        assert group_stat.head_armor.current == outfits.get("helmet").current_durability
+        assert group_stat.head_armor.maximum == outfits.get("arms_two_hand").max_durability
+        assert group_stat.damage.current == outfits.get("arms_two_hand").damage
+        assert group_stat.damage_armor.current == outfits.get("arms_two_hand").damage_armor
+
+        old_arms = arms_slot.left_hand.unequip()
+        assert group_stat.damage.current == (0,0)
+        assert type(old_arms) is MeleeArms
+
+        old_armor = armor_slot.head.unequip()
+        assert group_stat.head_armor.current == 0
+        assert type(old_armor) == HeadArmor
 
 class TestArmFastSlot:
     def test_equip(self, arms_slot, outfits):
