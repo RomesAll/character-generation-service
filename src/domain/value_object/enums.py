@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import TYPE_CHECKING
 
 class EquipmentType(Enum):
     OND_HAND = 'одноручный предмет'
@@ -14,3 +13,21 @@ class BodyPart(Enum):
 class Measurement(Enum):
     PERCENT = 'percent'
     UNITS = 'units'
+
+class StatEnum(Enum):
+    HEALTH = 'health'
+    HAND_SKILL = 'hand_skill'
+    HEAD_ARMOR = 'head_armor'
+    BODY_ARMOR = 'body_armor'
+    ACTION_POINT = 'action_point'
+    BRAVERY = 'bravery'
+    ENDURANCE = 'endurance'
+    INITIATIVE = 'initiative'
+    MELEE_DEFENSE = 'melee_defense'
+    SHOOTING_PROTECTION = 'shooting_protection'
+    DAMAGE = 'damage'
+    VISIBILITY = 'visibility'
+    MORAL = 'moral'
+    SHOOTING_SKILL = 'shooting_skill'
+    DAMAGE_ARMOR = 'damage_armor'
+    HEAD_HIT_CHANCE = 'head_hit_chance'
