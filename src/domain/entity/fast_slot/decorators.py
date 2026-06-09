@@ -58,7 +58,9 @@ def change_character_stats(func: Callable) -> Callable:
     def wrapper(self, *, item=None):
         group_stat: "GroupStat" = self.outer().group_stat
         old_item = func(self, item=item)
-        if group_stat and item:
+        if not group_stat:
+            return old_item
+        if item:
             MAPPING_OUTFITS_STATS.get(type(item))(group_stat=group_stat, item=item)
         else:
             MAPPING_OUTFITS_STATS.get(type(old_item))(group_stat=group_stat, item=None)
