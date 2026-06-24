@@ -4,7 +4,7 @@ from pathlib import Path
 
 from src.domain.exceptions import CurrentGreaterMaximumException
 from src.domain.value_object.enums import EquipmentType
-
+import uuid
 
 class Equipment(ABC, BaseModel):
     """
@@ -13,6 +13,7 @@ class Equipment(ABC, BaseModel):
 
     model_config = ConfigDict(validate_assignment=True)
 
+    uuid: uuid.UUID = Field(...)
     name: str = Field(..., frozen=True, description="Название оружия")
     type_equipment: EquipmentType = Field(
         ..., frozen=True, description="Тип оружия (одноручный, двуручный)"

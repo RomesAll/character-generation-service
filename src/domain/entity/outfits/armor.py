@@ -4,7 +4,7 @@ from pathlib import Path
 
 from src.domain.exceptions import CurrentGreaterMaximumException
 from src.domain.value_object.enums import BodyPart
-
+import uuid
 
 class Armor(ABC, BaseModel):
     """
@@ -12,6 +12,7 @@ class Armor(ABC, BaseModel):
     """
 
     model_config = ConfigDict(validate_assignment=True)
+    uuid: uuid.UUID = Field(...)
     name: str = Field(..., description="Название брони")
     endurance: int = Field(
         ..., description="Влияния на выносливость, чем выше, тем тяжелее броня"
