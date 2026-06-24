@@ -13,7 +13,7 @@ class Equipment(ABC, BaseModel):
 
     model_config = ConfigDict(validate_assignment=True)
 
-    uuid: uuid.UUID = Field(...)
+    id: uuid.UUID = Field(...)
     name: str = Field(..., frozen=True, description="Название оружия")
     type_equipment: EquipmentType = Field(
         ..., frozen=True, description="Тип оружия (одноручный, двуручный)"

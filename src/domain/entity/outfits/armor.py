@@ -12,7 +12,7 @@ class Armor(ABC, BaseModel):
     """
 
     model_config = ConfigDict(validate_assignment=True)
-    uuid: uuid.UUID = Field(...)
+    id: uuid.UUID = Field(default=uuid.uuid4)
     name: str = Field(..., description="Название брони")
     endurance: int = Field(
         ..., description="Влияния на выносливость, чем выше, тем тяжелее броня"
