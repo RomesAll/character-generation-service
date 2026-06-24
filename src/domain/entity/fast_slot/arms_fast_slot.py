@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict, PrivateAttr
 from typing import TYPE_CHECKING
-import copy, weakref
+import copy
+import weakref
 
 from src.domain.entity.fast_slot.decorators import change_character_stats
 from src.domain.entity.group_characteristics.group_stats import GroupStat
@@ -19,6 +20,7 @@ class ArmsFastSlot(BaseModel):
     соответствующие статы (урон оружием, броня головы, броня тела) у
     персонажа
     """
+
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
     left_hand: "ArmsFastSlot.ManageHandItem | None" = Field(
@@ -89,6 +91,7 @@ class ArmsFastSlot(BaseModel):
         Управляет установкой и снятием предмета с левой, правой руки и
         изменения соответсвующий статов (броня головы, тела)
         """
+
         model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
         # хранит часть тела для предмета (левая, правая рука)

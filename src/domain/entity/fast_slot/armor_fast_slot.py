@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict, PrivateAttr
-import copy, weakref
+import copy
+import weakref
 
 from src.domain.entity.fast_slot.decorators import change_character_stats
 from src.domain.exceptions import BodyPartArmorException
@@ -20,6 +21,7 @@ class ArmorFastSlot(BaseModel):
     соответствующие статы (урон оружием, броня головы, броня тела) у
     персонажа
     """
+
     model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
     head: "ArmorFastSlot.ManageArmorItem | None" = Field(
@@ -84,6 +86,7 @@ class ArmorFastSlot(BaseModel):
         Управляет установкой и снятием брони персонажа и
         изменения соответсвующий статов (броня головы, тела)
         """
+
         model_config = ConfigDict(extra="allow", arbitrary_types_allowed=True)
 
         # хранит часть тела брони (голова, тело)

@@ -10,6 +10,7 @@ class Armor(ABC, BaseModel):
     """
     Абстрактный класс для хранения инф. о брони
     """
+
     model_config = ConfigDict(validate_assignment=True)
     name: str = Field(..., description="Название брони")
     endurance: int = Field(
@@ -57,6 +58,7 @@ class HeadArmor(Armor):
     """
     Хранение информации о брони головы
     """
+
     max_durability: int = Field(
         ..., ge=0, le=300, description="Максимальная прочность брони для головы"
     )
@@ -67,6 +69,7 @@ class BodyArmor(Armor):
     """
     Хранения информации о брони тела
     """
+
     max_durability: int = Field(
         ..., ge=0, le=320, description="Максимальная прочность брони для тела"
     )

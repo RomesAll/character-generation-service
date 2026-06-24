@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Self
-import copy, weakref
+import copy
+import weakref
 
 from src.domain.entity.group_characteristics.decorators import (
     check_duplicate_perk,
@@ -10,7 +11,10 @@ from src.domain.entity.group_characteristics.decorators import (
 )
 from src.domain.entity.group_characteristics.group_stats import GroupStat
 from src.domain.entity.stats import BaseStat
-from src.domain.exceptions import GroupStatsRefNotFoundException, DuplicateMultiplierException
+from src.domain.exceptions import (
+    GroupStatsRefNotFoundException,
+    DuplicateMultiplierException,
+)
 from src.domain.value_object.perk import Perk, PerkMultiplier
 
 
@@ -19,6 +23,7 @@ class GroupPerk:
     """
     Хранит информацию о перках
     """
+
     _perks: list[Perk] = field(default_factory=list, init=False)
     _group_stats_ref: weakref.ref["GroupStat"] | None = field(
         default=None, compare=False, repr=False, init=False

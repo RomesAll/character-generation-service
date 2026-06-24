@@ -6,7 +6,7 @@ from src.domain.entity.stats import Health
 from contextlib import nullcontext
 from src.domain.exceptions import CurrentGreaterMaximumException, LevelException
 from src.domain.value_object import StatEnum, Measurement
-from src.domain.value_object.perk import PerkMultiplier, Perk
+from src.domain.value_object.perk import PerkMultiplier
 
 
 @pytest.fixture(scope="module")
@@ -81,7 +81,8 @@ class TestGroupStat:
 
     def test_copy_without_multiplier(self, create_group_stats):
         group_stat = create_group_stats.get_copy()
-        group_stat.append_multipliers(PerkMultiplier(
+        group_stat.append_multipliers(
+            PerkMultiplier(
                 stat=StatEnum.HEALTH,
                 amount=15,
                 measurement=Measurement.UNITS,

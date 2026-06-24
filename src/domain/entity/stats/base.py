@@ -2,7 +2,11 @@ from abc import ABC, abstractmethod
 from pydantic import BaseModel, PrivateAttr, Field, model_validator
 import copy
 
-from src.domain.exceptions import CurrentGreaterMaximumException, DuplicateMultiplierException, NotFoundMultiplierException
+from src.domain.exceptions import (
+    CurrentGreaterMaximumException,
+    DuplicateMultiplierException,
+    NotFoundMultiplierException,
+)
 from src.domain.value_object.enums import StatEnum, Measurement
 from src.domain.value_object.perk import PerkMultiplier
 
@@ -11,6 +15,7 @@ class BaseStat(BaseModel, ABC):
     """
     Абстрактный класс для хранения информации о статах
     """
+
     name: StatEnum = Field(..., frozen=True)
     current: int = Field(default=0, ge=0)
     maximum: int = Field(default=0, ge=0)
@@ -24,8 +29,10 @@ class BaseStat(BaseModel, ABC):
         :return:
         """
         if self.current > self.maximum:
-            raise CurrentGreaterMaximumException(f"Текущее значение стата {self.current} не "
-                                        f"может быть больше максимального {self.maximum}")
+            raise CurrentGreaterMaximumException(
+                f"Текущее значение стата {self.current} не "
+                f"может быть больше максимального {self.maximum}"
+            )
         return self
 
     @property
@@ -73,14 +80,14 @@ class BaseStat(BaseModel, ABC):
     def level_up(self):
         pass
 
-    def get_copy(self) -> 'BaseStat':
+    def get_copy(self) -> "BaseStat":
         """
         Получить копию BaseStat
         :return:
         """
         return copy.deepcopy(self)
 
-    def get_copy_without_multipliers(self) -> 'BaseStat':
+    def get_copy_without_multipliers(self) -> "BaseStat":
         """
         Получить копию BaseStat без модификаторов
         :return:
@@ -90,10 +97,12 @@ class BaseStat(BaseModel, ABC):
             copy_obj.remove_multipliers(multiplier)
         return copy_obj
 
+
 class UnitStat(BaseStat, ABC):
     """
     Хранения информации о статах, которые принимают единицы
     """
+
     current: int = Field(default=0, ge=500)
     maximum: int = Field(default=0, ge=500)
 
@@ -132,6 +141,7 @@ class PercentStat(BaseStat, ABC):
     """
     Хранения информации о статах, которые принимают проценты
     """
+
     current: int = Field(default=0, ge=100)
     maximum: int = Field(default=0, ge=100)
 

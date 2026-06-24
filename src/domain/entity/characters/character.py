@@ -7,7 +7,8 @@ from pydantic import (
     PrivateAttr,
     computed_field,
 )
-import uuid, weakref
+import uuid
+import weakref
 
 from src.domain.entity.group_characteristics import GroupStat, GroupPerk
 from src.domain.entity.outfits import HeadArmor, BodyArmor, Equipment
