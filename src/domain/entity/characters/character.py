@@ -19,7 +19,6 @@ from ...exceptions import (
     UnsupportedExtensionException,
     FileNotFoundException,
 )
-from ...value_object.id import CharacterID
 
 
 class Character(BaseModel):
@@ -39,7 +38,7 @@ class Character(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True, validate_assignment=True)
 
-    id: CharacterID = Field(..., frozen=True)
+    id: uuid.UUID = Field(..., frozen=True)
     name: str = Field(..., min_length=3, max_length=25)
     image: Path = Field(...)
     _arms_slot: ArmsFastSlot = PrivateAttr(default_factory=ArmsFastSlot)
