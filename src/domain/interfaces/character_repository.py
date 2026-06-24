@@ -1,11 +1,10 @@
 from abc import abstractmethod, ABC
 from src.domain.entity.characters import Character
-from src.domain.value_object.id import CharacterID
-
+import uuid
 
 class CharacterRepository(ABC):
     @abstractmethod
-    def get(self, id: CharacterID):
+    def get(self, id: uuid.UUID):
         pass
 
     @abstractmethod
