@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from src.domain.criteria.arms_criteria import ArmsCriteria
 
 class ArmsRepository(ABC):
     @abstractmethod
@@ -6,13 +7,13 @@ class ArmsRepository(ABC):
         pass
 
     @abstractmethod
-    def get_all_melee(self):
+    def get_melee(self, filters: ArmsCriteria):
         pass
 
     @abstractmethod
-    def get_all_shield(self):
+    def get_all_shield(self, filters: ArmsCriteria):
         pass
 
     @abstractmethod
-    def get_all_ranged(self):
+    def get_all_ranged(self, filters: ArmsCriteria):
         pass
