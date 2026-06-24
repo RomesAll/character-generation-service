@@ -1,3 +1,4 @@
+import uuid
 import weakref
 from pathlib import Path
 
@@ -21,6 +22,7 @@ def arms_slot():
 @pytest.fixture(scope="function")
 def outfits():
     arms = MeleeArms(
+        id=uuid.uuid4(),
         name="sword",
         type_equipment=EquipmentType.OND_HAND,
         price=10300,
@@ -34,6 +36,7 @@ def outfits():
         max_endurance=-2,
     )
     arms_two_hand = MeleeArms(
+        id=uuid.uuid4(),
         name="sword",
         type_equipment=EquipmentType.TWO_HAND,
         price=10300,
@@ -47,6 +50,7 @@ def outfits():
         max_endurance=-2,
     )
     helmet = HeadArmor(
+        id=uuid.uuid4(),
         name="helmet",
         endurance=-3,
         max_durability=100,
@@ -56,6 +60,7 @@ def outfits():
         price=4000,
     )
     plate = BodyArmor(
+        id=uuid.uuid4(),
         name="plate",
         endurance=-13,
         max_durability=100,
