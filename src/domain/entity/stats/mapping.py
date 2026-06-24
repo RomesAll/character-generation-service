@@ -15,7 +15,7 @@ from .stats import (
     DamageArmor,
     HeadHitChance,
     HeadArmor,
-    BodyArmor
+    BodyArmor,
 )
 
 MAPPING_STATS: dict = {
@@ -34,5 +34,5 @@ MAPPING_STATS: dict = {
     StatEnum.DAMAGE_ARMOR: DamageArmor,
     StatEnum.HEAD_HIT_CHANCE: HeadHitChance,
     StatEnum.HEAD_ARMOR: HeadArmor,
-    StatEnum.BODY_ARMOR: BodyArmor
+    StatEnum.BODY_ARMOR: BodyArmor,
 }

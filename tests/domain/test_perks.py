@@ -1,6 +1,7 @@
 from contextlib import nullcontext
 from copy import copy
-import weakref, pytest
+import weakref
+import pytest
 
 from src.domain.entity.group_characteristics import GroupStat, GroupPerk
 from src.domain.exceptions import (

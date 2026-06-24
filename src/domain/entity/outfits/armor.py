@@ -4,13 +4,15 @@ from pathlib import Path
 
 from src.domain.exceptions import CurrentGreaterMaximumException
 from src.domain.value_object.enums import BodyPart
-
+import uuid
 
 class Armor(ABC, BaseModel):
     """
     Абстрактный класс для хранения инф. о брони
     """
+
     model_config = ConfigDict(validate_assignment=True)
+    uuid: uuid.UUID = Field(...)
     name: str = Field(..., description="Название брони")
     endurance: int = Field(
         ..., description="Влияния на выносливость, чем выше, тем тяжелее броня"
@@ -57,6 +59,7 @@ class HeadArmor(Armor):
     """
     Хранение информации о брони головы
     """
+
     max_durability: int = Field(
         ..., ge=0, le=300, description="Максимальная прочность брони для головы"
     )
@@ -67,6 +70,7 @@ class BodyArmor(Armor):
     """
     Хранения информации о брони тела
     """
+
     max_durability: int = Field(
         ..., ge=0, le=320, description="Максимальная прочность брони для тела"
     )

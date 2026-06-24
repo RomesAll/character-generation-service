@@ -16,7 +16,9 @@ from src.domain.entity.stats.stats import (
     Moral,
     ShootingSkill,
     DamageArmor,
-    HeadHitChance, HeadArmor, BodyArmor,
+    HeadHitChance,
+    HeadArmor,
+    BodyArmor,
 )
 from src.domain.entity.stats.base import BaseStat
 from src.domain.exceptions import LevelException
@@ -34,7 +36,9 @@ class GroupStat(metaclass=BuilderStatMeta):
     _endurance: Endurance = field(default_factory=Endurance, init=False)
     _initiative: Initiative = field(default_factory=Initiative, init=False)
     _melee_defense: MeleeDefense = field(default_factory=MeleeDefense, init=False)
-    _shooting_protection: ShootingProtection = field(default_factory=ShootingProtection, init=False)
+    _shooting_protection: ShootingProtection = field(
+        default_factory=ShootingProtection, init=False
+    )
     _damage: Damage = field(default_factory=Damage, init=False)
     _visibility: Visibility = field(default_factory=Visibility, init=False)
     _moral: Moral = field(default_factory=Moral, init=False)
@@ -60,7 +64,7 @@ class GroupStat(metaclass=BuilderStatMeta):
         """
         return copy.deepcopy(self)
 
-    def get_copy_without_multiplier(self) -> 'GroupStat':
+    def get_copy_without_multiplier(self) -> "GroupStat":
         """
         Получить копию группы статов без модификаторов
         :return:
@@ -68,7 +72,9 @@ class GroupStat(metaclass=BuilderStatMeta):
         copy_obj = copy.copy(self)
         for stat in StatEnum:
             current_stat: BaseStat = getattr(copy_obj, stat.value)
-            setattr(copy_obj, '_' + stat.value, current_stat.get_copy_without_multipliers())
+            setattr(
+                copy_obj, "_" + stat.value, current_stat.get_copy_without_multipliers()
+            )
         return copy_obj
 
     def level_up(self) -> None:

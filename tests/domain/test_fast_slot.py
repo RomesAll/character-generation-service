@@ -103,17 +103,22 @@ class TestArmorFastSlot:
         arms_slot.left_hand.equip(item=outfits.get("arms_two_hand"))
 
         assert group_stat.head_armor.current == outfits.get("helmet").current_durability
-        assert group_stat.head_armor.maximum == outfits.get("arms_two_hand").max_durability
+        assert (
+            group_stat.head_armor.maximum == outfits.get("arms_two_hand").max_durability
+        )
         assert group_stat.damage.current == outfits.get("arms_two_hand").damage
-        assert group_stat.damage_armor.current == outfits.get("arms_two_hand").damage_armor
+        assert (
+            group_stat.damage_armor.current == outfits.get("arms_two_hand").damage_armor
+        )
 
         old_arms = arms_slot.left_hand.unequip()
-        assert group_stat.damage.current == (0,0)
+        assert group_stat.damage.current == (0, 0)
         assert type(old_arms) is MeleeArms
 
         old_armor = armor_slot.head.unequip()
         assert group_stat.head_armor.current == 0
         assert type(old_armor) == HeadArmor
+
 
 class TestArmFastSlot:
     def test_equip(self, arms_slot, outfits):
